@@ -8,9 +8,10 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run build -w apps/remote-login && concurrently -k -n \"host,remote\" -c \"blue,green\" \"npm run dev -w apps/host-layout\" \"npm run preview -w apps/remote-login\"",
+    "dev": "npm run build -w apps/remote-login -w apps/remote-dashboard && concurrently -k -n \"host,login,dashboard\" -c \"blue,green,magenta\" \"npm run dev -w apps/host-layout\" \"npm run preview -w apps/remote-login\" \"npm run preview -w apps/remote-dashboard\"",
     "dev:host": "npm run dev -w apps/host-layout",
     "dev:login": "npm run build -w apps/remote-login && npm run preview -w apps/remote-login",
+    "dev:dashboard": "npm run build -w apps/remote-dashboard && npm run preview -w apps/remote-dashboard",
     "build": "npm run build --workspaces --if-present",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
