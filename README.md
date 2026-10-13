@@ -9,7 +9,7 @@ Aplikasi web manajemen pembukuan modern berbasis arsitektur **Micro-Frontend (MF
 **Pembukuan v2** dirancang untuk mendukung skalabilitas pengembangan multi-tim, di mana aplikasi utama (Host) dan modul-modul fungsional (Remotes) dapat dikembangkan, diuji, dan dideploy secara independen tanpa ketergantungan deployment monolitis.
 
 ### Repositori & Remote
-- **Remote Origin**: `https://github.com/76BAN/Mikro-Frontend-Pembukuan.git`
+- **Remote Origin**: `git@github.com:76BAN/Mikro-Frontend-Pembukuan.git`
 - **Branch Utama**: `main` (Produksi) & `develop` (Integrasi Pengembangan)
 
 ---
@@ -89,7 +89,7 @@ Setiap pengembang maupun AI agent wajib mematuhi aturan baku di [`AGENTS.md`](./
 ### Langkah Instalasi
 ```bash
 # 1. Clone repositori
-git clone https://github.com/76BAN/Mikro-Frontend-Pembukuan.git
+git clone git@github.com:76BAN/Mikro-Frontend-Pembukuan.git
 cd Mikro-Frontend-Pembukuan
 
 # 2. Install seluruh dependency di root dan workspaces
