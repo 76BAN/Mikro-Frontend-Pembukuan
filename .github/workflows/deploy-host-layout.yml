@@ -1,14 +1,16 @@
-name: Deploy Host Layout
+name: CI/CD Host Layout
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
     paths:
       - 'apps/host-layout/**'
       - 'packages/ui/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/deploy-host-layout.yml'
+  pull_request:
+    branches: [main, develop]
 
 jobs:
   validate-and-deploy:
@@ -41,9 +43,13 @@ jobs:
         env:
           VITE_REMOTE_LOGIN_URL: ${{ secrets.REMOTE_LOGIN_URL || 'https://cdn.example.com/remotes/login/assets/remoteEntry.js' }}
 
-      # Deployment phase: deploy Host Layout ke primary domain
-      - name: Deploy Host to Hosting (Template)
-        if: github.ref == 'refs/heads/main'
+      - name: Deploy Staging
+        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
         run: |
-          echo "Sync host-layout dist to primary bucket/server"
+          echo "Deploying Host Layout to Staging Environment..."
+
+      - name: Deploy Production
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "Deploying Host Layout to Production Environment..."
           # aws s3 sync apps/host-layout/dist s3://bucket-host-app/ --delete

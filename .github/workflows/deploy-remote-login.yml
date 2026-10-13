@@ -1,14 +1,16 @@
-name: Deploy Remote Login
+name: CI/CD Remote Login
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
     paths:
       - 'apps/remote-login/**'
       - 'packages/ui/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/deploy-remote-login.yml'
+  pull_request:
+    branches: [main, develop]
 
 jobs:
   validate-and-deploy:
@@ -41,11 +43,14 @@ jobs:
         env:
           VITE_BASE_URL: ${{ secrets.REMOTE_LOGIN_BASE_URL || 'https://cdn.example.com/remotes/login/' }}
 
-      # Deployment phase: deploy remoteEntry.js dengan no-cache, assets dengan immutable cache
-      - name: Deploy assets to CDN (Template)
-        if: github.ref == 'refs/heads/main'
+      - name: Deploy Staging
+        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
         run: |
-          echo "Sync hashed assets to CDN bucket (cache-control: max-age=31536000, immutable)"
+          echo "Deploying Remote Login to Staging CDN..."
+
+      - name: Deploy Production
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "Deploying Remote Login to Production CDN..."
           # aws s3 sync apps/remote-login/dist/assets s3://bucket-mfe/remotes/login/assets --cache-control "public, max-age=31536000, immutable"
-          echo "Sync remoteEntry.js without cache (cache-control: no-cache, no-store, must-revalidate)"
           # aws s3 cp apps/remote-login/dist/assets/remoteEntry.js s3://bucket-mfe/remotes/login/assets/remoteEntry.js --cache-control "no-cache, no-store, must-revalidate"
