@@ -1,0 +1,49 @@
+name: Deploy Host Layout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/host-layout/**'
+      - 'packages/ui/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-host-layout.yml'
+
+jobs:
+  validate-and-deploy:
+    name: Lint, Test, Build, and Deploy Host Layout
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Build host-layout
+        run: npm run build -w apps/host-layout
+        env:
+          VITE_REMOTE_LOGIN_URL: ${{ secrets.REMOTE_LOGIN_URL || 'https://cdn.example.com/remotes/login/assets/remoteEntry.js' }}
+
+      # Deployment phase: deploy Host Layout ke primary domain
+      - name: Deploy Host to Hosting (Template)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Sync host-layout dist to primary bucket/server"
+          # aws s3 sync apps/host-layout/dist s3://bucket-host-app/ --delete

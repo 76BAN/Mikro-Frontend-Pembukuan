@@ -1,0 +1,51 @@
+name: Deploy Remote Login
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/remote-login/**'
+      - 'packages/ui/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-remote-login.yml'
+
+jobs:
+  validate-and-deploy:
+    name: Lint, Test, Build, and Deploy Remote Login
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Build remote-login
+        run: npm run build -w apps/remote-login
+        env:
+          VITE_BASE_URL: ${{ secrets.REMOTE_LOGIN_BASE_URL || 'https://cdn.example.com/remotes/login/' }}
+
+      # Deployment phase: deploy remoteEntry.js dengan no-cache, assets dengan immutable cache
+      - name: Deploy assets to CDN (Template)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Sync hashed assets to CDN bucket (cache-control: max-age=31536000, immutable)"
+          # aws s3 sync apps/remote-login/dist/assets s3://bucket-mfe/remotes/login/assets --cache-control "public, max-age=31536000, immutable"
+          echo "Sync remoteEntry.js without cache (cache-control: no-cache, no-store, must-revalidate)"
+          # aws s3 cp apps/remote-login/dist/assets/remoteEntry.js s3://bucket-mfe/remotes/login/assets/remoteEntry.js --cache-control "no-cache, no-store, must-revalidate"
