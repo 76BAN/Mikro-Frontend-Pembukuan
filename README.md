@@ -123,3 +123,59 @@ npm run lint:fix
 # Membangun produksi seluruh aplikasi
 npm run build
 ```
+
+---
+
+## 6. Panduan Kontribusi (Git Flow Workflow)
+
+Setiap kontributor wajib mengikuti alur kerja Git Flow berikut:
+
+### A. Memulai Fitur Baru
+Pastikan berada di branch `develop` terbaru:
+```bash
+# Menggunakan CLI git-flow:
+git flow feature start nama-fitur
+
+# ATAU menggunakan perintah git standar:
+git checkout develop
+git pull origin develop
+git checkout -b feature/nama-fitur
+```
+
+### B. Siklus Pengembangan (TDD & Clean Code)
+1. Tulis unit test terlebih dahulu (`*.test.tsx`) $\rightarrow$ pastikan gagal (Red).
+2. Tulis implementasi kode sampai seluruh test lulus (Green).
+3. Rapikan kode (Refactor) mengikuti standar Clean Architecture (Route tipis, komponen di `features/` atau `packages/ui`).
+4. Buat catatan perubahan di `artifacts/log-[nama-fitur].md` mengikuti template `artifacts/TEMPLATE-log.md`.
+
+### C. Commit Kode
+```bash
+git add .
+git commit -m "feat: deskripsi perubahan fitur"
+```
+*Pre-commit hook (Husky + lint-staged) akan memvalidasi lint, typecheck, dan unit test otomatis.*
+
+### D. Mempublikasikan Fitur & Membuka Pull Request
+```bash
+# Menggunakan CLI git-flow:
+git flow feature publish nama-fitur
+
+# ATAU menggunakan perintah git standar:
+git push -u origin feature/nama-fitur
+```
+1. Buka GitHub $\rightarrow$ buat **Pull Request**:
+   - **Base branch**: `develop`
+   - **Compare branch**: `feature/nama-fitur`
+2. Pastikan seluruh pipeline CI/CD GitHub Actions berstatus hijau.
+3. Dapatkan persetujuan (approval) dari reviewer, lalu **Merge Pull Request** di GitHub.
+
+> **⚠️ Catatan Penting:**  
+> Jangan menjalankan `git flow feature finish` di lokal karena merge wajib dilakukan melalui GitHub Pull Request yang dilindungi oleh *Branch Protection Rules*.
+
+### E. Membersihkan Branch Lokal
+Setelah PR berhasil di-merge di GitHub:
+```bash
+git checkout develop
+git pull origin develop
+git branch -d feature/nama-fitur
+```
