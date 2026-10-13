@@ -8,6 +8,7 @@ export default defineConfig({
     alias: {
       '@pembukuan/ui': path.resolve(__dirname, './packages/ui/src/index.ts'),
       'remote_login/LoginForm': path.resolve(__dirname, './apps/remote-login/src/LoginForm.tsx'),
+      'remote_dashboard/Dashboard': path.resolve(__dirname,'./apps/remote-dashboard/src/Dashboard.tsx'),
     },
   },
   test: {

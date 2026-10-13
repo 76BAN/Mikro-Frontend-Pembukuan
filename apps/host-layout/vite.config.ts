@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
         name: 'host_layout',
         remotes: {
           remote_login: env.VITE_REMOTE_LOGIN_URL || 'http://localhost:3001/assets/remoteEntry.js',
+          remote_dashboard: env.VITE_REMOTE_DASHBOARD_URL || 'http://localhost:3002/assets/remoteEntry.js',
         },
         shared: ['react', 'react-dom'],
       }),
