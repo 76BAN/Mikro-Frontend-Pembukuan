@@ -11,9 +11,6 @@ on:
       - '.github/workflows/deploy-remote-login.yml'
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'apps/remote-login/**'
-      - 'packages/ui/**'
 
 jobs:
   validate-and-deploy:
