@@ -1,8 +1,8 @@
 import React from 'react';
-import { BookOpen, LogOut, User } from 'lucide-react';
+import { BookOpen, LogOut, User, Moon, Sun } from 'lucide-react';
 import { Button } from '../Button';
+import { Switch } from '../Switch';
 import { cn } from '../../lib/utils';
-
 export interface HeaderNavLink {
   label: string;
   href: string;
@@ -16,8 +16,9 @@ export interface HeaderProps {
   navLinks?: HeaderNavLink[];
   onNavigate?: (href: string) => void;
   className?: string;
+  theme?: 'light' | 'dark';
+  onThemeToggle?: () => void;
 }
-
 export const Header: React.FC<HeaderProps> = ({
   title,
   username,
@@ -25,6 +26,8 @@ export const Header: React.FC<HeaderProps> = ({
   navLinks = [],
   onNavigate,
   className,
+  theme = 'light',
+  onThemeToggle,
 }) => {
   return (
     <header
@@ -63,6 +66,17 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-4">
+        {onThemeToggle && (
+          <div className="flex items-center gap-1.5 border-r border-gray-700 pr-3">
+            <Sun className="h-3.5 w-3.5 text-amber-400" />
+            <Switch
+              checked={theme === 'dark'}
+              onCheckedChange={onThemeToggle}
+              id="header-theme-toggle"
+            />
+            <Moon className="h-3.5 w-3.5 text-blue-300" />
+          </div>
+        )}
         {username ? (
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 text-sm text-gray-300">

@@ -20,8 +20,9 @@ Aplikasi web manajemen pembukuan modern berbasis arsitektur **Micro-Frontend (MF
 pembukuan-v2/
 ├── apps/
 │   ├── host-layout/          # Port 3000: Shell / Host Container (Orkestrator MFE)
-│   └── remote-login/         # Port 3001: Remote Micro-Frontend (Modul Autentikasi)
-├── packages/
+│   ├── remote-login/         # Port 3001: Remote Micro-Frontend (Modul Autentikasi)
+│   ├── remote-dashboard/     # Port 3002: Remote Micro-Frontend (Modul Dashboard & Keuangan)
+│   └── remote-design-system/ # Port 3003: Remote Micro-Frontend (Modul Panduan & Desain Komponen)
 │   └── ui/                   # Shared Atomic UI Library (@pembukuan/ui)
 ├── artifacts/                # Dokumentasi log perubahan fitur (log-[feature].md)
 └── .github/workflows/        # CI/CD terpisah per aplikasi berbasis path filter
@@ -30,16 +31,42 @@ pembukuan-v2/
 ### Konvensi Port Development Lokal
 - **`host-layout`**: `http://localhost:3000`
 - **`remote-login`**: `http://localhost:3001`
-- *Pola remote masa depan*: `remote-dashboard` (Port `3002`), `remote-laporan` (Port `3003`), dst.
+- **`remote-dashboard`**: `http://localhost:3002`
+- **`remote-design-system`**: `http://localhost:3003`
+- *Pola remote masa depan*: `remote-laporan` (Port `3004`), dst.
 
 ### Pola Desain (Clean Architecture & Colocation)
 - **Host**: Menerapkan *Thin Route Controllers* di `routes/` dan memisahkan tampilan ke `features/` (`dashboard`, `auth`).
 - **Remote**: Mengekstrak logika form ke custom hooks (`useLoginForm`) dan presentasi UI murni.
 - **Shared UI**: Menerapkan pola *Component Colocation* per-folder (`Button/`, `TextInput/`, `Header/`) lengkap dengan unit test dan re-export.
 
+
 ---
 
-## 3. Tech Stack & Library
+## 3. Design System, Theme & Canvas Palette
+
+Aplikasi menerapkan sistem tema dinamis (Light & Dark Mode) berbasis Tailwind CSS v4 dengan integrasi state global via Zustand (`themeStore`) dan kontrol visual komponen `Switch` dari `@pembukuan/ui`.
+
+### Palet Warna & Spesifikasi Canvas
+
+| Token Semantik | Utility Class | Light Theme | Dark Theme | Kegunaan |
+|---|---|---|---|---|
+| **Canvas (Background)** | `bg-canvas` | `#E2E8F0` | `#1A202C` | Background utama root layout aplikasi |
+| **Surface (Card / Container)** | `bg-surface` | `#FFFFFF` | `#2D3748` | Kontainer card, panel, form, dan slot modul |
+| **Surface Hover / Active** | `bg-surface-hover` | `#F1F5F9` | `#374151` | State hover elemen interaktif & sub-container |
+| **Border / Divider** | `border-border` | `#CBD5E1` | `#4A5568` | Pembatas antar-seksi dan garis form input |
+| **Text Muted / Secondary** | `text-muted` | `#64748B` | `#94A3B8` | Label sekunder, deskripsi, dan helper text |
+| **Button Primary** | `bg-blue-600` | `#2563EB` | `#3B82F6` | Tombol aksi utama (submit, tambah transaksi) |
+| **Status Success** | `text-green-700` | `#16A34A` | `#22C55E` | Metrik pemasukan dan indikator status aktif |
+| **Status Danger** | `text-red-700` | `#DC2626` | `#EF4444` | Metrik pengeluaran dan pesan error validasi |
+| **Focus Ring / Accent** | `focus:ring-blue-500` | `#3B82F6` | `#60A5FA` | Indikator fokus aksesibilitas keyboard |
+
+> **Aturan Wajib Pengembangan**: Dilarang keras menggunakan nilai hex arbitrary secara hardcoded (misal `dark:bg-[#1A202C]`). Seluruh komponen di `packages/ui` dan modul aplikasi wajib menggunakan token utility semantik (`bg-canvas`, `bg-surface`, `border-border`, `text-muted`, `bg-surface-hover`). File tema terpusat disediakan di `@import "../../../packages/ui/src/styles/theme.css";`.
+### Mekanisme Theming Micro-Frontend
+Tema dikontrol dari Host Shell melalui class `.dark` pada `document.documentElement` (`<html>`). Seluruh remote micro-frontend (`remote-login`, `remote-dashboard`) secara otomatis mengadopsi tema aktif tanpa perlu sinkronisasi event bus lintas aplikasi.
+---
+
+## 4. Tech Stack & Library
 
 | Kategori | Teknologi | Deskripsi |
 |---|---|---|
@@ -57,7 +84,7 @@ pembukuan-v2/
 
 ---
 
-## 4. Aturan Pengembangan (Rules)
+## 5. Aturan Pengembangan (Rules)
 
 Setiap pengembang maupun AI agent wajib mematuhi aturan baku di [`AGENTS.md`](./AGENTS.md):
 
@@ -79,7 +106,7 @@ Setiap pengembang maupun AI agent wajib mematuhi aturan baku di [`AGENTS.md`](./
 
 ---
 
-## 5. Cara Instalasi & Menjalankan Project
+## 6. Cara Instalasi & Menjalankan Project
 
 ### Prasyarat
 - Node.js versi 20 ke atas
@@ -103,7 +130,8 @@ npm run dev
 
 # ATAU jalankan secara terpisah di terminal berbeda:
 npm run dev:host    # Host Layout di http://localhost:3000
-npm run dev:login   # Remote Login di http://localhost:3001
+npm run dev:login       # Remote Login di http://localhost:3001
+npm run dev:dashboard   # Remote Dashboard di http://localhost:3002
 ```
 
 ### Menjalankan Pengujian & Validasi Mutlak
@@ -126,7 +154,7 @@ npm run build
 
 ---
 
-## 6. Panduan Kontribusi (Git Flow Workflow)
+## 7. Panduan Kontribusi (Git Flow Workflow)
 
 Setiap kontributor wajib mengikuti alur kerja Git Flow berikut:
 

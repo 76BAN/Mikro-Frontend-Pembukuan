@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { DashboardView } from './DashboardView';
 import { useAuthStore } from '../../../store/authStore';
 
@@ -22,5 +22,15 @@ describe('DashboardView Component', () => {
     useAuthStore.getState().login({ username: 'hendra' });
     render(<DashboardView />);
     expect(screen.getByText(/hendra/i)).toBeInTheDocument();
+  });
+
+  it('calls onAddTransaction callback when action button in remote dashboard is clicked', async () => {
+    const handleAddTransaction = vi.fn();
+    render(<DashboardView onAddTransaction={handleAddTransaction} />);
+
+    const addButton = await screen.findByRole('button', { name: /catat transaksi/i });
+    fireEvent.click(addButton);
+
+    expect(handleAddTransaction).toHaveBeenCalledTimes(1);
   });
 });

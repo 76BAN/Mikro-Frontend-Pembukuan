@@ -19,11 +19,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-sm w-full p-6 rounded-xl border border-gray-200 bg-white shadow-sm space-y-4"
+      className="max-w-sm w-full p-6 rounded-xl border border-border bg-surface shadow-sm space-y-4 transition-colors"
     >
-      <div className="border-b border-gray-100 pb-3">
-        <h2 className="text-xl font-bold text-gray-900 m-0">Masuk Akun</h2>
-        <p className="text-xs text-gray-500 mt-1">
+      <div className="border-b border-border pb-3">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-[#F8FAFC] m-0">Masuk Akun</h2>
+        <p className="text-xs text-muted mt-1">
           Masukkan informasi akun Anda untuk mengakses sistem pembukuan.
         </p>
       </div>

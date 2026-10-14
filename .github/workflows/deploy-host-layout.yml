@@ -42,6 +42,7 @@ jobs:
         run: npm run build -w apps/host-layout
         env:
           VITE_REMOTE_LOGIN_URL: ${{ secrets.REMOTE_LOGIN_URL || 'https://cdn.example.com/remotes/login/assets/remoteEntry.js' }}
+          VITE_REMOTE_DASHBOARD_URL: ${{ secrets.REMOTE_DASHBOARD_URL || 'https://cdn.example.com/remotes/dashboard/assets/remoteEntry.js' }}
 
       - name: Deploy Staging
         if: github.ref == 'refs/heads/develop' && github.event_name == 'push'

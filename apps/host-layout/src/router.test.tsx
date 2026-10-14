@@ -26,4 +26,15 @@ describe('TanStack Router Integration in Host Layout', () => {
       expect(screen.getByTestId('remote-slot')).toBeInTheDocument();
     });
   });
+
+  it('renders Design System page and remote slot when route is /design-system', async () => {
+    const memoryHistory = createMemoryHistory({ initialEntries: ['/design-system'] });
+    const testRouter = createAppRouter(memoryHistory);
+
+    render(<RouterProvider router={testRouter} />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('remote-design-system-slot')).toBeInTheDocument();
+    });
+  });
 });
