@@ -18,3 +18,10 @@ declare module 'remote_dashboard/Dashboard' {
   const Dashboard: ComponentType<DashboardProps>;
   export default Dashboard;
 }
+
+declare module 'remote_design_system/DesignSystem' {
+  import type { ComponentType } from 'react';
+
+  const DesignSystem: ComponentType;
+  export default DesignSystem;
+}

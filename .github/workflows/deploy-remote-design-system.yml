@@ -1,0 +1,56 @@
+name: CI/CD Remote Design System
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/remote-design-system/**'
+      - 'packages/ui/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-remote-design-system.yml'
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  validate-and-deploy:
+    name: Lint, Test, Build, and Deploy Remote Design System
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Build remote-design-system
+        run: npm run build -w apps/remote-design-system
+        env:
+          VITE_BASE_URL: "${{ secrets.REMOTE_DESIGN_SYSTEM_BASE_URL || 'https://cdn.example.com/remotes/design-system/' }}"
+
+      - name: Deploy Staging
+        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+        run: |
+          echo "Deploying Remote Design System to Staging CDN..."
+
+      - name: Deploy Production
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "Deploying Remote Design System to Production CDN..."
+          #aws s3 sync apps/remote-design-system/dist/assets s3://bucket-mfe/remotes/design-system/assets --cache-control "public, max-age=31536000, immutable"
+          #aws s3 cp apps/remote-design-system/dist/assets/remoteEntry.js s3://bucket-mfe/remotes/design-system/assets/remoteEntry.js --cache-control "no-cache, no-store, must-revalidate"

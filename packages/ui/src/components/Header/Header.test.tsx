@@ -34,4 +34,22 @@ describe('Shared Header Component', () => {
 
     expect(handleLogout).toHaveBeenCalledTimes(1);
   });
+
+  it('renders theme toggle and triggers onThemeToggle', () => {
+    const handleThemeToggle = vi.fn();
+    render(
+      <Header
+        title="Pembukuan"
+        theme="light"
+        onThemeToggle={handleThemeToggle}
+      />
+    );
+
+    const switchEl = screen.getByRole('switch');
+    expect(switchEl).toBeInTheDocument();
+    expect(switchEl).toHaveAttribute('aria-checked', 'false');
+
+    fireEvent.click(switchEl);
+    expect(handleThemeToggle).toHaveBeenCalledTimes(1);
+  });
 });

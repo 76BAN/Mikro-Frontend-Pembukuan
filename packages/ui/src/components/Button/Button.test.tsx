@@ -25,4 +25,31 @@ describe('Button Component', () => {
     const btn = screen.getByRole('button', { name: 'Bahaya' });
     expect(btn.className).toContain('bg-red-600');
   });
+
+  it('renders with leftIcon and rightIcon', () => {
+    render(
+      <Button
+        label="Dengan Icon"
+        leftIcon={<span data-testid="left-icon">Left</span>}
+        rightIcon={<span data-testid="right-icon">Right</span>}
+      />
+    );
+    expect(screen.getByTestId('left-icon')).toBeInTheDocument();
+    expect(screen.getByTestId('right-icon')).toBeInTheDocument();
+  });
+
+  it('renders loading state with spinner and disables button', () => {
+    render(<Button label="Simpan" isLoading />);
+    const btn = screen.getByRole('button');
+    expect(btn).toBeDisabled();
+    expect(btn).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('applies size classes correctly', () => {
+    const { rerender } = render(<Button label="Kecil" size="sm" />);
+    expect(screen.getByRole('button')).toHaveClass('text-xs');
+
+    rerender(<Button label="Besar" size="lg" />);
+    expect(screen.getByRole('button')).toHaveClass('text-base');
+  });
 });

@@ -1,11 +1,12 @@
 import { Suspense, lazy } from 'react';
+import { Alert, Spinner } from '@pembukuan/ui';
 
 const RemoteLoginForm = lazy(() =>
   import('remote_login/LoginForm').catch(() => ({
     default: () => (
-      <div className="text-red-700 p-4 border border-dashed border-red-500 rounded bg-red-50 text-sm">
+      <Alert variant="error" title="Modul Remote Tidak Aktif">
         Modul Login Remote sedang tidak aktif (Pastikan remote-login aktif di port 3001)
-      </div>
+      </Alert>
     ),
   }))
 );
@@ -19,8 +20,8 @@ export function RemoteLoginSlot({ onLoginSuccess }: RemoteLoginSlotProps) {
     <div data-testid="remote-slot">
       <Suspense
         fallback={
-          <div className="text-gray-500 text-center py-6 text-sm">
-            Memuat modul login remote...
+          <div className="flex justify-center py-6">
+            <Spinner label="Memuat modul login remote..." />
           </div>
         }
       >

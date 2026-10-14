@@ -1,3 +1,4 @@
+import { Card } from '@pembukuan/ui';
 import { useAuthStore } from '../../../store/authStore';
 import { RemoteLoginSlot } from './RemoteLoginSlot';
 
@@ -16,9 +17,9 @@ export function LoginView({ onNavigateHome }: LoginViewProps) {
   return (
     <div className="max-w-md mx-auto py-8 flex justify-center">
       {user ? (
-        <div className="w-full bg-white p-6 rounded-lg border border-gray-200 shadow-sm text-center space-y-4">
-          <p className="text-gray-700">
-            Anda sudah masuk sebagai <strong>{user.username}</strong>
+        <Card className="w-full text-center space-y-4">
+          <p className="text-gray-700 dark:text-gray-200">
+            Anda sudah masuk sebagai <strong className="text-gray-900 dark:text-white">{user.username}</strong>
           </p>
           <button
             type="button"
@@ -27,7 +28,7 @@ export function LoginView({ onNavigateHome }: LoginViewProps) {
           >
             Buka Dashboard
           </button>
-        </div>
+        </Card>
       ) : (
         <RemoteLoginSlot onLoginSuccess={handleSuccess} />
       )}

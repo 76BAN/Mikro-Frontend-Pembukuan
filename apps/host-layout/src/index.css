@@ -1,5 +1,8 @@
 @import "tailwindcss";
+@import "../../../packages/ui/src/styles/theme.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
 @source "../../../packages/ui";
 @source "../../remote-login";
 @source "../../remote-dashboard";
+@source "../../remote-design-system";
